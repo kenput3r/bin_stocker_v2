@@ -47,7 +47,8 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
                   [bin]: {
                     name: bin,
                     available: item.Available,
-                    onHand: item.OnHand
+                    onHand: item.OnHand,
+                    qtyTransferred: 0
                   }
                 }
               }
@@ -61,7 +62,8 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
             new_inventory[item.SKU].locations[item.location].bins[bin] = {
               name: bin,
               available: item.Available,
-              onHand: item.OnHand
+              onHand: item.OnHand,
+              qtyTransferred: 0
             }
           //location doesn't exist yet
           }else{
@@ -71,7 +73,8 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
                 [bin]: {
                   name: bin,
                   available: item.Available,
-                  onHand: item.OnHand
+                  onHand: item.OnHand,
+                  qtyTransferred: 0
                 }
               }
             }
