@@ -267,3 +267,5 @@ const GetBinMax = (sku, name, bin) => {
   }
   return max_qty;
 }
+
+export default GetBins;
