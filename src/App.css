@@ -20,3 +20,84 @@
 .App-link {
   color: #09d3ac;
 }
+
+.success {
+  background-color: #cef9ce;
+}
+
+.error {
+  background-color: #f3a0a0 !important;
+}
+
+@media print {
+  .success {
+    background-color: #ffffff !important;
+  }
+
+  .hide-on-print {
+    display: none !important;
+  }
+
+  #TransferPreviewTable {
+    min-width: 0 !important;
+  }
+
+  td.sku {
+    width: 112px !important;
+    max-width: 112px !important;
+  }
+  th.sku {
+    width: 112px !important;
+    max-width: 112px !important;
+  }
+
+  td.name {
+    box-sizing: border-box;
+    max-width: 112px !important;
+    width:112px !important;
+    overflow: hidden !important;
+    padding: 4px 10px 4px 10px !important;
+  }
+  th.name {
+    padding: 4px 10px 4px 10px !important;
+  }
+
+  td.from-location {
+    box-sizing: border-box !important;
+    max-width: 112px !important;
+    width: 112px !important;
+    padding: 4px 10px 4px 10px !important;
+  }
+  th.from-location {
+    max-width: 112px !important;
+    width: 112px !important;
+    padding: 4px 10px 4px 10px !important;
+  }
+
+  td.to-location {
+    box-sizing: border-box;
+    max-width: 130px !important;
+    width: 130px !important;
+    padding: 4px 10px 4px 10px !important;
+  }
+  th.to-location {
+    box-sizing: border-box;
+    max-width: 130px !important;
+    width: 130px !important;
+    padding: 4px 10px 4px 10px !important;
+  }
+
+  td.qty {
+    box-sizing: border-box !important;
+    max-width: 112px !important;
+    padding: 4px 10px 4px 10px !important;
+    text-align: left !important;
+  }
+  th.qty {
+    box-sizing: border-box !important;
+    max-width: 112px !important;
+    width: 60px;
+    padding: 4px 10px 4px 10px !important;
+    text-align: left !important;
+  }
+}
