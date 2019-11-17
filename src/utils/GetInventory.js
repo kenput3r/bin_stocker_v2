@@ -35,7 +35,7 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
       if(char1 !== 'f' && char1 !== 'j' && char1 !== 'l' && !name.includes('hang tag')) {
         //if new_inventory does not already have sku
         if(!new_inventory[item.SKU]) {
-          const bin = item.bin || 'NoBin'
+          const bin = item.Bin || 'NoBin'
           new_inventory[item.SKU] = {
             sku: item.SKU,
             name: item.Name,
@@ -43,40 +43,37 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
             locations: {
               [item.Location]: {
                 name: item.Location,
-                bins: {
-                  [bin]: {
+                bins: [
+                  {
                     name: bin,
                     available: item.Available,
-                    onHand: item.OnHand,
-                    qtyTransferred: 0
+                    onHand: item.OnHand
                   }
-                }
+                ]
               }
             }
           }
         //if new_inventory already has sku
         }else{
-          const bin = item.bin || 'NoBin';
+          const bin = item.Bin || 'NoBin';
           //location already exists
-          if(new_inventory[item.SKU].locations[item.location]) {
-            new_inventory[item.SKU].locations[item.location].bins[bin] = {
+          if(new_inventory[item.SKU].locations[item.Location]) {
+            new_inventory[item.SKU].locations[item.Location].bins.push({
               name: bin,
               available: item.Available,
-              onHand: item.OnHand,
-              qtyTransferred: 0
-            }
+              onHand: item.OnHand
+            })
           //location doesn't exist yet
           }else{
             new_inventory[item.SKU].locations[item.Location] = {
               name: item.Location,
-              bins: {
-                [bin]: {
+              bins: [
+                {
                   name: bin,
                   available: item.Available,
-                  onHand: item.OnHand,
-                  qtyTransferred: 0
+                  onHand: item.OnHand
                 }
-              }
+              ]
             }
           }
         }
