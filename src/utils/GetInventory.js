@@ -8,13 +8,13 @@ import Credentials from '../Credentials';
  * @param {object} inventory - optional object, used for recursion
  */
 const GetInventory = async (page, updateProgress, promise, inventory) => {
-  updateProgress(`Getting inventory page ${page}`);
   const fetch_url = `https://inventory.dearsystems.com/ExternalApi/v2/ref/productavailability?Page=${page}&Limit=1000`;
   const fetch_headers = new Headers({
     'Content-Type': 'application/json',
     'api-auth-accountid': Credentials.id,
     'api-auth-applicationkey': Credentials.key
   });
+  if(page === 1) updateProgress(`Getting inventory page ${page}`, 5);
   try {
     const data = await fetch(fetch_url, {
       method: 'get',
@@ -80,7 +80,8 @@ const GetInventory = async (page, updateProgress, promise, inventory) => {
       }
     }
     if(page < pages) {
-      GetInventory(++page, updateProgress, promise, new_inventory)
+      GetInventory(++page, updateProgress, promise, new_inventory);
+      updateProgress(`Getting inventory page ${page} of ${pages}`, page / pages * 100);
     }else{
       return promise.resolve(new_inventory);
     }
