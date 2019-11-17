@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "bin_stocker_v2",
+  "name": "Restock Bins From Other Bins",
   "icons": [
     {
       "src": "favicon.ico",
