@@ -20,6 +20,9 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import BinSelect from './BinSelect';
+import { Grid, Button } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import PostTransfer from '../utils/PostTransfer';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -181,6 +184,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
+    paddingBottom: 50
   },
   paper: {
     width: '100%',
@@ -203,6 +207,19 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
+  progressBar: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+      marginBottom: 50
+    },
+  },
+  progressMessage: {
+    fontWeight: 'normal', 
+    marginBlockStart: '2em', 
+    marginBlockEnd: '2.5em', 
+    textTransform: 'uppercase'
+  },
 }));
 
 export default function EnhancedTable(props) {
@@ -214,6 +231,8 @@ export default function EnhancedTable(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [progressMessage, setProgressMessage] = React.useState('CLICK TRANSFER TO START TRANSFERRING');
+  const [completed, setCompleted] = React.useState(0);
 
   const handleRequestSort = (event, property) => {
     const isDesc = orderBy === property && order === 'desc';
@@ -278,6 +297,21 @@ export default function EnhancedTable(props) {
     }
     setRows(data);
     setSelected([]);
+  }
+
+  const sendUpdate = (remaining_rows) => {
+    const current_row = rows.length - remaining_rows;
+    const percent_done = current_row / rows.length * 100;
+    setCompleted(percent_done);
+    setProgressMessage(`TRANSFERRING: ${current_row} of ${rows.length}`)
+    console.log('we updating sometin')
+  }
+
+  const handleStart = () => {
+    sendUpdate(rows.length);
+    const warehouse = props.fromLocation === 'Townsend' ? 'Townsend' : 'Main Warehouse';
+    console.log(warehouse);
+    PostTransfer(rows, sendUpdate, warehouse);
   }
 
   const isSelected = id => selected.indexOf(id) !== -1;
@@ -369,6 +403,19 @@ export default function EnhancedTable(props) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+        <Grid container spacing={0} direction="row" justify="center">
+          <Grid container item xs={12} justify="center">
+            <Button variant="outlined" color="primary" className={classes.button} onClick={handleStart}>
+              Transfer
+            </Button>
+          </Grid>
+          <Grid container item xs={6} justify="center">
+            <h5 className={classes.progressMessage}>{progressMessage}</h5>
+            <div className={classes.progressBar}>
+              <LinearProgress variant="determinate" value={completed} />
+            </div>
+          </Grid>
+        </Grid>
     </div>
   );
 }

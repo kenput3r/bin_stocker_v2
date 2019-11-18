@@ -1,8 +1,11 @@
 import Credentials from '../Credentials';
 
 const PostTransfer = async (data, sendUpdate, from_warehouse) => {
-  let warehouse = from_warehouse && from_warehouse !== 'Main Warehouse' ? from_warehouse : 'Main Warehouse'
-  const transfer_item = data.shift();
+  const temp_data = [...data];
+  const warehouse = from_warehouse && from_warehouse !== 'Main Warehouse' ? from_warehouse : 'Main Warehouse';
+  const successes = [];
+  const errors = [];
+  const transfer_item = temp_data.shift();
   const fetch_url = 'https://inventory.dearsystems.com/ExternalApi/v2/stockTransfer';
   const fetch_headers = new Headers({
     'Content-Type': 'application/json',
@@ -18,11 +21,11 @@ const PostTransfer = async (data, sendUpdate, from_warehouse) => {
     "To": transfer_item.to_bin_id,
     "ToLocation": `${transfer_item.to_location}: ${transfer_item.to_bin}`,
     "CostDistributionType": "Cost",
-    "InTransitAccount": in_transit_account,
+    "InTransitAccount": 1210,
     "DepartureDate": transfer_date,
     "CompletionDate": transfer_date,
     "RequiredByDate": transfer_date,
-    "Reference": "an act of bin_stocker",
+    "Reference": "an act of bin_stocker_v2",
     "Lines": [
       {
         "ProductID": "",
@@ -43,24 +46,21 @@ const PostTransfer = async (data, sendUpdate, from_warehouse) => {
     body: JSON.stringify(transfer_data)
   });
   if(transfer.status === 200) {
-    const successes = this.state.successes;
     successes.push(transfer_item.id);
-    this.setState({successes: successes});
+    sendUpdate(temp_data.length);
   }else{
-    const errors = this.state.errors;
     errors.push(transfer_item.id);
-    this.setState({errors: errors});
   }
   console.log(transfer);
-  if(data.length) {
-    console.log(data);
-    this.handleTransfer(data, update_transfer_status);
+  if(temp_data.length) {
+    console.log(temp_data);
+    PostTransfer(temp_data, sendUpdate, warehouse);
   }else{
-    update_transfer_status();
+    sendUpdate();
     console.log('successes:');
-    console.log(this.state.successes);
+    console.log(successes);
     console.log('errors:');
-    console.log(this.state.errors);
+    console.log(errors);
   }
 }
 

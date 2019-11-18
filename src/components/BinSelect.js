@@ -20,6 +20,9 @@ export default function BinSelect(props) {
   const [bin, setBin] = React.useState('');
   const handleChange = event => {
     setBin(event.target.value);
+    console.log('changing')
+    console.log(event.target.options[event.target.selectedIndex].dataset)
+    console.log(event.target.options[event.target.selectedIndex].dataset.id)
   }
   const handleClick = async event => {
     if(!bins.length) {
@@ -43,11 +46,11 @@ export default function BinSelect(props) {
           }
         }
       }
-      setBins(stripped_bins_list)
+      setBins(stripped_bins_list);
     }
   }
   const menu_items = bins.map(bin =>
-    <option key={bin.ID} value={bin.Name}>{bin.Name}</option>
+    <option key={bin.ID} data-id={bin.ID} value={bin.Name}>{bin.Name}</option>
   )
   return (
     <div>
@@ -61,6 +64,7 @@ export default function BinSelect(props) {
           onChange={handleChange}
         >
           <option default disabled>select a bin</option>
+          <option value={null}>-</option>
           {menu_items}
         </Select>
 

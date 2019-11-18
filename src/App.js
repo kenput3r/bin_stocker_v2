@@ -8,6 +8,7 @@ function App() {
     view: 'StartingForm',
     rows: [],
     bins: [],
+    fromWarehouse: '',
   });
   
   const setView = view => setState({
@@ -15,25 +16,26 @@ function App() {
     view: view,
   });
 
-  const setRows = (rows, to_location, bins) => setState({
+  const setRows = (rows, to_location, bins, warehouse) => setState({
     ...state,
     rows: rows,
     toLocation: to_location,
-    bins: bins
+    bins: bins,
+    fromWarehouse: warehouse,
   });
 
   useEffect(() => {
     if(state.rows.length && state.toLocation) {
       setView('TransferForm');
     }
-  },[state.rows, state.toLocation, state.bins]);
+  },[state.rows, state.toLocation, state.bins, state.fromWarehouse]);
 
   return (
     <div className="App">
       {state.view === 'StartingForm' ?
       <StartingForm setRows={setRows} />
       :
-      <TransferForm rows={state.rows} toLocation={state.toLocation} bins={state.bins} />}
+      <TransferForm rows={state.rows} toLocation={state.toLocation} bins={state.bins} fromLocation={state.fromWarehouse} />}
     </div>
   );
 }

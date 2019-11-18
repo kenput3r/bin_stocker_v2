@@ -83,7 +83,10 @@ function StartingForm(props) {
       return;
     }
     const list = GetTransferList(state.from, state.to, inventory, bins);
-    props.setRows(list, state.to, bins);
+    if(!list.length) {
+      updateProgress(`NOTHING TO TRANSFER FROM ${state.from} TO ${state.to}`, 0)
+    }
+    props.setRows(list, state.to, bins, state.from);
   }
 
   return (
