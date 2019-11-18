@@ -242,7 +242,7 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.index);
+      const newSelecteds = rows.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -299,18 +299,35 @@ export default function EnhancedTable(props) {
     setSelected([]);
   }
 
-  const sendUpdate = (remaining_rows) => {
+  const updateRow = (row) => {
+    const temp_rows = [...rows];
+    for(let i = 0; i < temp_rows.length; i++) {
+      if(temp_rows[i].id === row.id) {
+        temp_rows.splice(i, 1, row);
+        break;
+      }
+    }
+    setRows(temp_rows);
+  }
+
+  const sendUpdate = (remaining_rows, row) => {
+    if(row) {
+      updateRow(row);
+    }
     const current_row = rows.length - remaining_rows;
     const percent_done = current_row / rows.length * 100;
+    let message = `TRANSFERRING: ${current_row} of ${rows.length}`;
+    if(!remaining_rows) {
+      message = 'TRANSFER COMPLETE';
+    }
     setCompleted(percent_done);
-    setProgressMessage(`TRANSFERRING: ${current_row} of ${rows.length}`)
-    console.log('we updating sometin')
+    setProgressMessage(message);
+    console.log('we updating sometin');
   }
 
   const handleStart = () => {
     sendUpdate(rows.length);
     const warehouse = props.fromLocation === 'Townsend' ? 'Townsend' : 'Main Warehouse';
-    console.log(warehouse);
     PostTransfer(rows, sendUpdate, warehouse);
   }
 
@@ -344,8 +361,6 @@ export default function EnhancedTable(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  const class_name = row.to_bin === '?' ? 'error' : '';
-
                   return (
                     <TableRow
                       hover
@@ -355,7 +370,7 @@ export default function EnhancedTable(props) {
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
-                      className={class_name}
+                      className={row.cssClass}
                     >
                       <TableCell className="hide-on-print" padding="checkbox">
                         <Checkbox
@@ -374,7 +389,7 @@ export default function EnhancedTable(props) {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.from_bin}</TableCell>
                       <TableCell align="left">
-                        {row.to_bin === '?' ? <BinSelect toLocation={props.toLocation} /> : row.to_bin}
+                        {row.to_bin === '?' ? <BinSelect toLocation={props.toLocation} row={row} updateRow={updateRow} bins={props.bins} /> : row.to_bin}
                       </TableCell>
                     </TableRow>
                   );
