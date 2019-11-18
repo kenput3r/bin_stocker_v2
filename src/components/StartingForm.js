@@ -82,9 +82,8 @@ function StartingForm(props) {
       console.log('something went wrong getting the inventory');
       return;
     }
-    const list = GetTransferList(state.from, state.to, inventory);
-    console.log(list);
-    props.setRows(list);
+    const list = GetTransferList(state.from, state.to, inventory, bins);
+    props.setRows(list, state.to, bins);
   }
 
   return (
