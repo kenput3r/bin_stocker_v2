@@ -4,9 +4,25 @@ import ReformatBins from './ReformatBins';
 const GetTransferList = (from_location, to_location, inventory_list, bins) => {
   const bin_ids = ReformatBins(bins);
   let index = 0;
-  function createData(sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty) {
+
+  /**
+   * @function createData - Formats the data for the transfer list
+   * @param {String} sku - the item SKU
+   * @param {String} name - the item Name
+   * @param {String} from_location - the warehouse the item is transferring from
+   * @param {String} from_bin - the bin the item is transferring from
+   * @param {String} from_bin_id - the id of the bin the item is transferring from
+   * @param {Number} from_available - the available qty in the from bin
+   * @param {String} to_location - the warehouse the item is transferring to
+   * @param {String} to_bin - the bin the item is transferring to
+   * @param {String} to_bin_id - the id of the bin the item is transferring to
+   * @param {Number} to_available - the available qty in the to bin
+   * @param {Number} qty - the qty to transfer
+   * @param {String} cssClass - the css class for the table row
+   */
+  function createData(sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty, cssClass) {
     index += 1
-    return { sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty, id: index };
+    return { sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty, cssClass, id: index };
   }
   let list = [];
   let homeless_items = [];
@@ -82,7 +98,8 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                   bin.name,
                   bin_ids['Main Warehouse'].bins[bin.name].id,
                   bin.available,
-                  qty
+                  qty,
+                  'ok'
                 )
               );
             }else{
@@ -120,7 +137,8 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                 '?',
                 '?',
                 '?',
-                qty
+                qty,
+                'error'
               )
             );
           }
@@ -139,7 +157,8 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                 '?',
                 '?',
                 '?',
-                qty
+                qty,
+                'error'
               )
             );
           }
@@ -158,7 +177,8 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                 '?',
                 '?',
                 '?',
-                qty
+                qty,
+                'error'
               )
             );
           }
