@@ -47,13 +47,15 @@ const PostTransfer = async (data, sendUpdate, from_warehouse) => {
   });
   if(transfer.status === 200) {
     successes.push(transfer_item.id);
-    sendUpdate(temp_data.length);
+    transfer_item.cssClass = 'success';
+    sendUpdate(temp_data.length, transfer_item);
   }else{
+    transfer_item.cssClass = 'error';
     errors.push(transfer_item.id);
+    sendUpdate(temp_data.length, transfer_item);
   }
   console.log(transfer);
   if(temp_data.length) {
-    console.log(temp_data);
     PostTransfer(temp_data, sendUpdate, warehouse);
   }else{
     sendUpdate();
