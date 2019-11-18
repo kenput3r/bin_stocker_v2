@@ -1,10 +1,12 @@
 import GetBinMax from './GetBinMax';
+import ReformatBins from './ReformatBins';
 
-const GetTransferList = (from_location, to_location, inventory_list) => {
+const GetTransferList = (from_location, to_location, inventory_list, bins) => {
+  const bin_ids = ReformatBins(bins);
   let index = 0;
-  function createData(qty, sku, name, from_bin, to_bin) {
+  function createData(sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty) {
     index += 1
-    return { qty, sku, name, from_bin, to_bin, id: index };
+    return { sku, name, from_location, from_bin, from_bin_id, from_available, to_location, to_bin, to_bin_id, to_available, qty, id: index };
   }
   let list = [];
   let homeless_items = [];
@@ -37,7 +39,8 @@ const GetTransferList = (from_location, to_location, inventory_list) => {
         if(!bin.name.includes('Apparel') 
         && !bin.name.includes('Merch') 
         && !bin.name.includes('Pallet Racks') 
-        && !bin.name.includes('Picking')) {
+        && !bin.name.includes('Picking')
+        && !bin.name.includes('NoBin')) {
           from_bins.push(bin);
         }else if(bin.name.includes(to_location)) {
           to_bins.push(bin);
@@ -69,11 +72,17 @@ const GetTransferList = (from_location, to_location, inventory_list) => {
               }
               list.push(
                 createData(
-                  qty,
                   sku,
                   name,
+                  warehouse,
                   from_bin.name,
-                  bin.name
+                  bin_ids[warehouse].bins[from_bin.name].id,
+                  from_bin.available,
+                  'Main Warehouse',
+                  bin.name,
+                  bin_ids['Main Warehouse'].bins[bin.name].id,
+                  bin.available,
+                  qty
                 )
               );
             }else{
@@ -101,11 +110,17 @@ const GetTransferList = (from_location, to_location, inventory_list) => {
           if(char1 === 's' || char1 === 'h') {
             homeless_items.push(
               createData(
-                qty,
                 sku,
                 name,
+                warehouse,
                 from_bin.name,
-                '?'
+                bin_ids[warehouse].bins[from_bin.name].id,
+                from_bin.available,
+                'Main Warehouse',
+                '?',
+                '?',
+                '?',
+                qty
               )
             );
           }
@@ -114,11 +129,17 @@ const GetTransferList = (from_location, to_location, inventory_list) => {
           if(char1 === 'm' || char1 === 'c') {
             homeless_items.push(
               createData(
-                qty,
                 sku,
                 name,
+                warehouse,
                 from_bin.name,
-                '?'
+                bin_ids[warehouse].bins[from_bin.name].id,
+                from_bin.available,
+                'Main Warehouse',
+                '?',
+                '?',
+                '?',
+                qty
               )
             );
           }
@@ -127,11 +148,17 @@ const GetTransferList = (from_location, to_location, inventory_list) => {
           if(char1 === 'p') {
             homeless_items.push(
               createData(
-                qty,
                 sku,
                 name,
+                warehouse,
                 from_bin.name,
-                '?'
+                bin_ids[warehouse].bins[from_bin.name].id,
+                from_bin.available,
+                'Main Warehouse',
+                '?',
+                '?',
+                '?',
+                qty
               )
             );
           }
