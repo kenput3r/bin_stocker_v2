@@ -7,6 +7,7 @@ function App() {
   const [state, setState] = React.useState({
     view: 'StartingForm',
     rows: [],
+    bins: [],
   });
   
   const setView = view => setState({
@@ -14,23 +15,25 @@ function App() {
     view: view,
   });
 
-  const setRows = rows => setState({
+  const setRows = (rows, to_location, bins) => setState({
     ...state,
     rows: rows,
+    toLocation: to_location,
+    bins: bins
   });
 
   useEffect(() => {
-    if(state.rows.length) {
+    if(state.rows.length && state.toLocation) {
       setView('TransferForm');
     }
-  },[state.rows]);
+  },[state.rows, state.toLocation, state.bins]);
 
   return (
     <div className="App">
       {state.view === 'StartingForm' ?
       <StartingForm setRows={setRows} />
       :
-      <TransferForm rows={state.rows} />}
+      <TransferForm rows={state.rows} toLocation={state.toLocation} bins={state.bins} />}
     </div>
   );
 }

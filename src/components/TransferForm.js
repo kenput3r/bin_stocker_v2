@@ -19,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import BinSelect from './BinSelect';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -309,21 +310,27 @@ export default function EnhancedTable(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
+                  const class_name = row.to_bin === '?' ? 'error' : '';
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.id)}
+                      // onClick={event => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
+                      className={class_name}
                     >
                       <TableCell className="hide-on-print" padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
+                          onClick={event => handleClick(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          selected={isItemSelected}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
@@ -332,7 +339,9 @@ export default function EnhancedTable(props) {
                       <TableCell align="left">{row.sku}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.from_bin}</TableCell>
-                      <TableCell align="left">{row.to_bin}</TableCell>
+                      <TableCell align="left">
+                        {row.to_bin === '?' ? <BinSelect toLocation={props.toLocation} /> : row.to_bin}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
