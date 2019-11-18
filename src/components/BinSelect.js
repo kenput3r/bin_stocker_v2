@@ -21,20 +21,27 @@ export default function BinSelect(props) {
   const handleChange = event => {
     setBin(event.target.value);
     console.log('changing')
-    console.log(event.target.options[event.target.selectedIndex].dataset)
-    console.log(event.target.options[event.target.selectedIndex].dataset.id)
+    // console.log(event.target.options[event.target.selectedIndex].dataset)
+    // console.log(event.target.options[event.target.selectedIndex].dataset.id)
+    props.row.to_bin = event.target.value;
+    props.row.to_bin_id = event.target.options[event.target.selectedIndex].dataset.id;
+    props.row.cssClass = 'ok';
+    console.log(props.row);
+    props.updateRow(props.row);
   }
   const handleClick = async event => {
-    if(!bins.length) {
-      const bins_list = await new Promise((res, rej) => {
-        GetBins({resolve: res, reject: rej});
-      }).catch(error => {
-        console.log(error)
-      });
-      if(!bins_list) {
-        console.log('something went wrong getting the bins');
-        return;
-      }
+    console.log(props.bins);
+    // if(!bins.length) {
+    //   const bins_list = await new Promise((res, rej) => {
+    //     GetBins({resolve: res, reject: rej});
+    //   }).catch(error => {
+    //     console.log(error)
+    //   });
+    //   if(!bins_list) {
+    //     console.log('something went wrong getting the bins');
+    //     return;
+    //   }
+      const bins_list = props.bins;
       const locations = Object.keys(bins_list);
       const stripped_bins_list = [];
       for(const location of locations) {
@@ -47,7 +54,7 @@ export default function BinSelect(props) {
         }
       }
       setBins(stripped_bins_list);
-    }
+    //}
   }
   const menu_items = bins.map(bin =>
     <option key={bin.ID} data-id={bin.ID} value={bin.Name}>{bin.Name}</option>
