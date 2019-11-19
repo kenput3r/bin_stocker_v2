@@ -1,5 +1,6 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,6 +26,9 @@ const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
   },
+  progressSection: {
+    marginBottom: 50,
+  },
   progressBar: {
     width: '100%',
     '& > * + *': {
@@ -37,6 +41,12 @@ const useStyles = makeStyles(theme => ({
     marginBlockEnd: '2.5em', 
     textTransform: 'uppercase'
   },
+  paperForm: {
+    maxWidth: 1000,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: 1000,
+  }
 }));
 
 function StartingForm(props) {
@@ -71,6 +81,7 @@ function StartingForm(props) {
     });
     if(!bins) {
       console.log('something went wrong getting the bins');
+      updateProgress(`something went wrong getting the bins`, 0);
       return;
     }
     const inventory = await new Promise((res, rej) => {
@@ -80,11 +91,12 @@ function StartingForm(props) {
     });
     if(!inventory) {
       console.log('something went wrong getting the inventory');
+      updateProgress(`something went wrong getting the inventory`, 0);
       return;
     }
     const list = GetTransferList(state.from, state.to, inventory, bins);
     if(!list.length) {
-      updateProgress(`NOTHING TO TRANSFER FROM ${state.from} TO ${state.to}`, 0)
+      updateProgress(`NOTHING TO TRANSFER FROM ${state.from} TO ${state.to}`, 0);
     }
     props.setRows(list, state.to, bins, state.from);
   }
@@ -93,60 +105,62 @@ function StartingForm(props) {
     <Box>
       <Container>
         <Grid container spacing={1} align="center" justify="center" direction="column" style={{height: '100vh'}}>
-          <Grid container spacing={0} direction="row" justify="center">
-            <Grid container item xs={12} justify="center">
-              <h1 style={{color: '#747F8C', marginBottom: '100px'}}><img src={DearLogo} alt="Dear Systems Logo" /> bin_stocker_v2</h1>
+          <Paper className={classes.paperForm}>
+            <Grid container spacing={0} direction="row" justify="center">
+              <Grid container item xs={12} justify="center">
+                <h1 style={{color: '#747F8C', marginBottom: '100px'}}><img src={DearLogo} alt="Dear Systems Logo" /> bin_stocker_v2</h1>
+              </Grid>
+              <Grid container item xs={6} spacing={3} justify="center">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="from-native-helper">Pick From</InputLabel>
+                  <NativeSelect
+                    value={state.from}
+                    onChange={handleChange('from')}
+                    inputProps={{
+                      name: 'from',
+                      id: 'from-native-helper',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={'Pallet Racks'}>Pallet Racks</option>
+                    <option value={'Container'}>Containers</option>
+                    <option value={'Townsend'}>Townsend</option>
+                  </NativeSelect>
+                  <FormHelperText>Select the restock from location</FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid container item xs={6} spacing={3} justify="center">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="to-native-helper">Transfer To</InputLabel>
+                  <NativeSelect
+                    value={state.to}
+                    onChange={handleChange('to')}
+                    inputProps={{
+                      name: 'to',
+                      id: 'to-native-helper',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={'Apparel'}>Apparel</option>
+                    <option value={'Merch'}>Merch</option>
+                    <option value={'Picking'}>Picking</option>
+                  </NativeSelect>
+                  <FormHelperText>Select the restock to location</FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid container item xs={12} justify="center">
+                <Button variant="outlined" color="primary" className={classes.button} onClick={handleStart}>
+                  Start
+                </Button>
+              </Grid>
+              <Grid className={classes.progressSection} container item xs={6} justify="center">
+                <h5 className={classes.progressMessage}>{progressMessage}</h5>
+                <div className={classes.progressBar}>
+                  <LinearProgress variant="determinate" value={completed} />
+                </div>
+              </Grid>
             </Grid>
-            <Grid container item xs={6} spacing={3} justify="center">
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="from-native-helper">Pick From</InputLabel>
-                <NativeSelect
-                  value={state.from}
-                  onChange={handleChange('from')}
-                  inputProps={{
-                    name: 'from',
-                    id: 'from-native-helper',
-                  }}
-                >
-                  <option value="" />
-                  <option value={'Pallet Racks'}>Pallet Racks</option>
-                  <option value={'Container'}>Containers</option>
-                  <option value={'Townsend'}>Townsend</option>
-                </NativeSelect>
-                <FormHelperText>Select the restock from location</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid container item xs={6} spacing={3} justify="center">
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="to-native-helper">Transfer To</InputLabel>
-                <NativeSelect
-                  value={state.to}
-                  onChange={handleChange('to')}
-                  inputProps={{
-                    name: 'to',
-                    id: 'to-native-helper',
-                  }}
-                >
-                  <option value="" />
-                  <option value={'Apparel'}>Apparel</option>
-                  <option value={'Merch'}>Merch</option>
-                  <option value={'Picking'}>Picking</option>
-                </NativeSelect>
-                <FormHelperText>Select the restock to location</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid container item xs={12} justify="center">
-              <Button variant="outlined" color="primary" className={classes.button} onClick={handleStart}>
-                Start
-              </Button>
-            </Grid>
-            <Grid container item xs={6} justify="center">
-              <h5 className={classes.progressMessage}>{progressMessage}</h5>
-              <div className={classes.progressBar}>
-                <LinearProgress variant="determinate" value={completed} />
-              </div>
-            </Grid>
-          </Grid>
+          </Paper>
         </Grid>
       </Container>
     </Box>

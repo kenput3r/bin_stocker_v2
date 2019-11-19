@@ -186,10 +186,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
     paddingBottom: 50
   },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
   table: {
     minWidth: 750,
   },
@@ -233,6 +229,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [progressMessage, setProgressMessage] = React.useState('CLICK TRANSFER TO START TRANSFERRING');
   const [completed, setCompleted] = React.useState(0);
+  const rows_per_page_arr = [10, rows.length];
 
   const handleRequestSort = (event, property) => {
     const isDesc = orderBy === property && order === 'desc';
@@ -296,6 +293,7 @@ export default function EnhancedTable(props) {
       }
     }
     setRows(data);
+    setRowsPerPage(data.length);
     setSelected([]);
   }
 
@@ -337,7 +335,7 @@ export default function EnhancedTable(props) {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
+      <Paper className="paper-table">
         <EnhancedTableToolbar numSelected={selected.length} handleChangeDense={handleChangeDense} handleDelete={handleDelete} />
         <div className={classes.tableWrapper}>
           <Table
@@ -403,7 +401,7 @@ export default function EnhancedTable(props) {
           </Table>
         </div>
         <TablePagination
-          rowsPerPageOptions={[10, 50, 100, 200, 500]}
+          rowsPerPageOptions={rows_per_page_arr}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
