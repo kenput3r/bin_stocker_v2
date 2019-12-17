@@ -71,7 +71,7 @@ const GetBinMax = (sku, name, bin) => {
       }else{
         max_qty = 25;
       }
-    }else if(name.includes('pancho')) {
+    }else if(name.includes('poncho')) {
       max_qty = 10;
     }else{
       if(sku.includes('xxxxl') || sku.includes('xxxxxl') || sku.includes('5xl') || sku.includes('4xl')) {
