@@ -264,6 +264,21 @@ const GetBinMax = (sku, name, bin) => {
     }else if(sku === 'p221nn') {
       max_qty =	1920
     }
+  /*****************************
+  ** if restocking retail store
+  *****************************/
+  }else if(bin.includes('retail store')) {
+    if(sku.includes('xxxxl') || sku.includes('xxxxxl') || sku.includes('5xl') || sku.includes('4xl')) {
+      max_qty = 15;
+    }else if(sku.includes('xxxl') || sku.includes('3xl')) {
+      max_qty = 30;
+    }else if(sku.includes('xxl') || sku.includes('2xl')) {
+      max_qty = 40;
+    }else if(sku.includes('xl')) {
+      max_qty = 45;
+    }else{
+      max_qty = 50;
+    }
   }
   return max_qty;
 }

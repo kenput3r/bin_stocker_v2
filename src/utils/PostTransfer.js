@@ -25,7 +25,7 @@ const PostTransfer = async (data, sendUpdate, from_warehouse) => {
     "DepartureDate": transfer_date,
     "CompletionDate": transfer_date,
     "RequiredByDate": transfer_date,
-    "Reference": "an act of bin_stocker_v2",
+    "Reference": transfer_item.sku,
     "Lines": [
       {
         "ProductID": "",

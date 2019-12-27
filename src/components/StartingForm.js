@@ -144,6 +144,7 @@ function StartingForm(props) {
                     <option value={'Apparel'}>Apparel</option>
                     <option value={'Merch'}>Merch</option>
                     <option value={'Picking'}>Picking</option>
+                    <option value={'Retail Store'}>Retail Store</option>
                   </NativeSelect>
                   <FormHelperText>Select the restock to location</FormHelperText>
                 </FormControl>

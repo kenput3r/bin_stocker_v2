@@ -4,7 +4,6 @@ import ReformatBins from './ReformatBins';
 const GetTransferList = (from_location, to_location, inventory_list, bins) => {
   const bin_ids = ReformatBins(bins);
   let index = 0;
-
   /**
    * @function createData - Formats the data for the transfer list
    * @param {String} sku - the item SKU
@@ -35,16 +34,28 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     const name = inventory_list[key].name;
     const bin_max = GetBinMax(sku, name, to_location);
     let bins = [];
+    //if transferring from Townsend
     if(warehouse === 'Townsend') {
-      const location_keys = Object.keys(inventory_list[key].locations)
+      const location_keys = Object.keys(inventory_list[key].locations);
       for(const location_key of location_keys) {
         let location = inventory_list[key].locations[location_key];
         if(location.name !== 'Retail Store' && location.bins.length) {
           bins = bins.concat(location.bins);
         }
       }
+    //if not transferring from townsend, and item exists in the warehouse, and the item is in a bin
+    //insert the bins with the items into the bins array
     }else if(inventory_list[key].locations[warehouse] && inventory_list[key].locations[warehouse].bins){
       bins = inventory_list[key].locations[warehouse].bins;
+      if(inventory_list[key].locations[to_location] && inventory_list[key].locations[to_location].bins) {
+        console.log(inventory_list[key].locations[to_location].bins)
+        let temp_bins = inventory_list[key].locations[to_location].bins;
+        temp_bins.forEach(bin => {
+          bin.name = `Retail Store - ${bin.name}`;
+          bins.concat(bin);
+        });
+        console.log(bins);
+      }
     }
     let from_bins = [];
     let to_bins = [];
@@ -56,6 +67,7 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
         && !bin.name.includes('Merch') 
         && !bin.name.includes('Pallet Racks') 
         && !bin.name.includes('Picking')
+        && !bin.name.includes('Retail Store')
         && !bin.name.includes('NoBin')) {
           from_bins.push(bin);
         }else if(bin.name.includes(to_location)) {
@@ -73,6 +85,7 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     //if we have both a picking and put away location
     if(from_bins.length && to_bins.length) {
       for(const bin of to_bins) {
+
         //if bin is at 50% or less capacity
         if(bin_max / 2 >= bin.available) {
           let qty_needed = bin_max - bin.available;
