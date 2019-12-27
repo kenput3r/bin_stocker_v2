@@ -48,18 +48,17 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     }else if(inventory_list[key].locations[warehouse] && inventory_list[key].locations[warehouse].bins){
       bins = inventory_list[key].locations[warehouse].bins;
       if(inventory_list[key].locations[to_location] && inventory_list[key].locations[to_location].bins) {
-        console.log(inventory_list[key].locations[to_location].bins)
         let temp_bins = inventory_list[key].locations[to_location].bins;
         temp_bins.forEach(bin => {
           bin.name = `Retail Store - ${bin.name}`;
-          bins.concat(bin);
+          bins.push(bin);
         });
-        console.log(bins);
       }
     }
     let from_bins = [];
     let to_bins = [];
     for(const bin of bins) {
+      //console.log(bin);
       //handle from location being Townsend
       if(warehouse === 'Townsend') {
         //if bin name doesn't include a picking prefix, it must be a Townsend bin
@@ -85,38 +84,41 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     //if we have both a picking and put away location
     if(from_bins.length && to_bins.length) {
       for(const bin of to_bins) {
-
-        //if bin is at 50% or less capacity
-        if(bin_max / 2 >= bin.available) {
-          let qty_needed = bin_max - bin.available;
-          for(const from_bin of from_bins) {
-            if(qty_needed > 0 && from_bin.available) {
-              let qty = 0;
-              if(qty_needed > from_bin.available) {
-                qty = from_bin.available;
-                from_bin.available = 0;
+        if(!bin.name.includes('NoBin')) {
+          //if bin is at 50% or less capacity
+          if(bin_max / 2 >= bin.available) {
+            let qty_needed = bin_max - bin.available;
+            for(const from_bin of from_bins) {
+              if(qty_needed > 0 && from_bin.available) {
+                let qty = 0;
+                if(qty_needed > from_bin.available) {
+                  qty = from_bin.available;
+                  from_bin.available = 0;
+                }else{
+                  qty = qty_needed;
+                  from_bin.available -= qty_needed;
+                }
+                bin.name = bin.name.replace('Retail Store - ', '');
+                console.log(bin.name);
+                list.push(
+                  createData(
+                    sku,
+                    name,
+                    warehouse,
+                    from_bin.name,
+                    bin_ids[warehouse].bins[from_bin.name].id,
+                    from_bin.available,
+                    to_location,
+                    bin.name,
+                    bin_ids[to_location].bins[bin.name].id,
+                    bin.available,
+                    qty,
+                    'ok'
+                  )
+                );
               }else{
-                qty = qty_needed;
-                from_bin.available -= qty_needed;
+                break;
               }
-              list.push(
-                createData(
-                  sku,
-                  name,
-                  warehouse,
-                  from_bin.name,
-                  bin_ids[warehouse].bins[from_bin.name].id,
-                  from_bin.available,
-                  'Main Warehouse',
-                  bin.name,
-                  bin_ids['Main Warehouse'].bins[bin.name].id,
-                  bin.available,
-                  qty,
-                  'ok'
-                )
-              );
-            }else{
-              break;
             }
           }
         }

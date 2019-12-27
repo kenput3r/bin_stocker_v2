@@ -269,13 +269,19 @@ const GetBinMax = (sku, name, bin) => {
   *****************************/
   }else if(bin.includes('retail store')) {
     if(sku.includes('xxxxl') || sku.includes('xxxxxl') || sku.includes('5xl') || sku.includes('4xl')) {
-      max_qty = 15;
+      max_qty = 1;
     }else if(sku.includes('xxxl') || sku.includes('3xl')) {
-      max_qty = 30;
+      max_qty = 2;
     }else if(sku.includes('xxl') || sku.includes('2xl')) {
-      max_qty = 40;
+      max_qty = 3;
     }else if(sku.includes('xl')) {
-      max_qty = 45;
+      max_qty = 4;
+    }else if(sku.includes('l')) {
+      max_qty = 4;
+    }else if(sku.includes('m')) {
+      max_qty = 3;
+    }else if(sku.includes('s')) {
+      max_qty = 3;
     }else{
       max_qty = 50;
     }
