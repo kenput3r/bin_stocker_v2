@@ -283,7 +283,7 @@ const GetBinMax = (sku, name, bin) => {
     }else if(sku.includes('s')) {
       max_qty = 3;
     }else{
-      max_qty = 50;
+      max_qty = 5;
     }
   }
   return max_qty;

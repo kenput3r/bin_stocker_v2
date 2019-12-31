@@ -58,7 +58,6 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     let from_bins = [];
     let to_bins = [];
     for(const bin of bins) {
-      //console.log(bin);
       //handle from location being Townsend
       if(warehouse === 'Townsend') {
         //if bin name doesn't include a picking prefix, it must be a Townsend bin
@@ -85,8 +84,9 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
     if(from_bins.length && to_bins.length) {
       for(const bin of to_bins) {
         if(!bin.name.includes('NoBin')) {
-          //if bin is at 50% or less capacity
-          if(bin_max / 2 >= bin.available) {
+          //if bin stock is below the threshold
+          const threshold = to_location === 'Retail Store' ? bin_max : bin_max / 2;
+          if(threshold > bin.available) {
             let qty_needed = bin_max - bin.available;
             for(const from_bin of from_bins) {
               if(qty_needed > 0 && from_bin.available) {
@@ -99,7 +99,7 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                   from_bin.available -= qty_needed;
                 }
                 bin.name = bin.name.replace('Retail Store - ', '');
-                console.log(bin.name);
+                const to_location_warehouse = to_location !== 'Retail Store' ? 'Main Warehouse' : to_location;
                 list.push(
                   createData(
                     sku,
@@ -110,7 +110,7 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
                     from_bin.available,
                     to_location,
                     bin.name,
-                    bin_ids[to_location].bins[bin.name].id,
+                    bin_ids[to_location_warehouse].bins[bin.name].id,
                     bin.available,
                     qty,
                     'ok'
@@ -197,6 +197,24 @@ const GetTransferList = (from_location, to_location, inventory_list, bins) => {
               )
             );
           }
+        //handle putting away to Retail Store
+        }else if(to_location.includes('Retail Store')) {
+          homeless_items.push(
+            createData(
+              sku,
+              name,
+              warehouse,
+              from_bin.name,
+              bin_ids[warehouse].bins[from_bin.name].id,
+              from_bin.available,
+              to_location,
+              'Receiving',
+              bin_ids[to_location].bins['Receiving'].id,
+              0,
+              qty,
+              'error'
+            )
+          );
         }
       }
     }

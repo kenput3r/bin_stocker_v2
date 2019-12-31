@@ -387,6 +387,7 @@ export default function EnhancedTable(props) {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.from_bin}</TableCell>
                       <TableCell align="left">
+                        {row.to_bin === 'Receiving' ? 'Retail Store: ' : ''}
                         {row.to_bin === '?' ? <BinSelect toLocation={props.toLocation} row={row} updateRow={updateRow} bins={props.bins} /> : row.to_bin}
                       </TableCell>
                     </TableRow>

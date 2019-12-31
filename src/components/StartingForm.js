@@ -125,6 +125,8 @@ function StartingForm(props) {
                     <option value={'Pallet Racks'}>Pallet Racks</option>
                     <option value={'Container'}>Containers</option>
                     <option value={'Townsend'}>Townsend</option>
+                    <option value={'Apparel'}>Main Warehouse: Apparel</option>
+                    <option value={'Merch'}>Main Warehouse: Merch</option>
                   </NativeSelect>
                   <FormHelperText>Select the restock from location</FormHelperText>
                 </FormControl>
